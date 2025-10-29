@@ -3,22 +3,145 @@
 <head>
   <meta charset="UTF-8">
   <title>Todo List</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      color: white;
+      font-size: 2.5em;
+      margin-bottom: 30px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .input-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    #todoInput {
+      flex: 1;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      outline: none;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s;
+    }
+
+    #todoInput:focus {
+      box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    button {
+      padding: 15px 30px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #667eea;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    button:hover {
+      background: white;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    #todoList {
+      list-style: none;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    #todoList li {
+      background: white;
+      padding: 18px 20px;
+      margin-bottom: 12px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s;
+      color: #333;
+      font-size: 16px;
+      animation: slideIn 0.3s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #todoList li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    #todoList li:hover {
+      transform: translateX(5px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      background: #f8f9ff;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: white;
+      padding: 40px;
+      font-size: 18px;
+      opacity: 0.9;
+    }
+  </style>
 </head>
 <body>
   <h1>Todo List</h1>
-
-  <input id="todoInput" type="text" placeholder="New task">
-  <button onclick="addTodo()">Add</button>
-
+  <div class="input-container">
+    <input id="todoInput" type="text" placeholder="New task">
+    <button onclick="addTodo()">Add</button>
+  </div>
   <ul id="todoList"></ul>
-
   <script>
     const API_URL = "/todos";
-
     async function loadTodos() {
       const res = await fetch(API_URL);
       const todos = await res.json();
-
       const list = document.getElementById("todoList");
       list.innerHTML = "";
       todos.forEach(todo => {
@@ -29,7 +152,6 @@
         list.appendChild(li);
       });
     }
-
     async function addTodo() {
       const text = document.getElementById("todoInput").value;
       if (!text.trim()) return alert("Enter task");
@@ -40,12 +162,10 @@
       });
       loadTodos();
     }
-
     async function deleteTodo(id) {
       await fetch(API_URL + "/" + id, { method: "DELETE" });
       loadTodos();
     }
-
     loadTodos();
   </script>
 </body>
